@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Work_Sans as workSans } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
+import { SessionProvider } from "next-auth/react";
+import { auth } from "@/auth";
 
 const WorkSans = workSans({
   variable: "--font-work-sans",
@@ -12,18 +15,22 @@ export const metadata: Metadata = {
   title: "YC Directory",
   description: "Pitch, Vote and Grow",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/app/favicon.ico",
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
   return (
     <html lang="en">
-      <body className={`${WorkSans.variable}  antialiased`}>{children}</body>
+      <SessionProvider session={session}>
+        <body className={`${WorkSans.variable}  antialiased`}>{children}</body>
+        <Toaster />
+      </SessionProvider>
     </html>
   );
 }
